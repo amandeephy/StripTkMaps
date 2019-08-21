@@ -8,7 +8,7 @@ import codecs
 import shutil                                                 
 import subprocess
 import Ext_functions
-from __future__ import print_function                                #Why is this even imported?
+from __future__ import print_function                                
 
 
 # This seems like a better place to start
@@ -43,7 +43,7 @@ else:
     sys.exit(0)
 
 
-for i in range(len(Run_Number)):                                                            #Main loop 
+for i in range(len(Run_Number)):                                                           
 
     ################# Download DQM file ############################
 
@@ -53,19 +53,19 @@ for i in range(len(Run_Number)):                                                
     File_Name = downloadOfflineDQMhisto(Run_Number[i], Run_type, rereco)
 
     if Run_type == "StreamExpress" or Run_type == "StreamHIExpress":
-        File_Name_PCL = Ext_functions.downloadOfflinePCLhisto(Run_Number[i], Run_type)                    #What is the PCL one?
+        File_Name_PCL = Ext_functions.downloadOfflinePCLhisto(Run_Number[i], Run_type)                   
     
-    deadRocMap, File_Name_online = Ext_functions.downloadOnlineDQMhisto(Run_Number[i], Run_type)           #Uses Online
+    deadRocMap, File_Name_online = Ext_functions.downloadOnlineDQMhisto(Run_Number[i], Run_type)           
 
     runDirval    = Ext_functions.setRunDirectory(Run_Number[i])
-    DataLocalDir = runDirval[0]                                                            #Redundant ain't it?
+    DataLocalDir = runDirval[0]                                                            
 
     ################ Check if run is complete  ##############
 
     print("Getting the run status from DQMFile")
     Check_command = 'check_runcomplete '+filepath+File_Name
-    Check_output  = subprocess.call(Check_command, shell=True)                              #What does this do?
-                                                                                            #Executes the above command, another dependancy
+    Check_output  = subprocess.call(Check_command, shell=True)                             
+                                                                                            
     if Check_output == 0:
         print('Using DQM file: '+File_Name)
 
@@ -80,12 +80,12 @@ for i in range(len(Run_Number)):                                                
             sys.exit(0)
 
     if Run_type=="StreamExpress" or Run_type=="StreamHIExpress":
-        if File_Name_PCL=='Temp':                                                          #Where would this even be defined ?
+        if File_Name_PCL=='Temp':                                                          
             
             print('***************** Warning: PCL file is not ready ************************')
             input_var = raw_input("PCL file is not ready, you will need to re-run the script later for PCL plots, do you want to continue? (y/n): ")
             
-            if (input_var == 'y') or (input_var == 'Y'):                                   #Is this the best we can do ?
+            if (input_var == 'y') or (input_var == 'Y'):                                   
                 print('-------->   Remember to re-run the script later !!!!! ')
             else:
                 sys.exit(0)
@@ -94,10 +94,10 @@ for i in range(len(Run_Number)):                                                
 
     checkfolder = os.path.exists(str(Run_Number[i]))
     if checkfolder == True:
-        shutil.rmtree(str(Run_Number[i]))                                                 #Recursively remove dirs
+        shutil.rmtree(str(Run_Number[i]))                                                 
         os.makedirs(str(Run_Number[i])+'/'+Run_type)                          
     else:
-        os.makedirs(str(Run_Number[i])+'/'+Run_type)                                      #Much redundance?
+        os.makedirs(str(Run_Number[i])+'/'+Run_type)                                      
         
     ############## Getting Global Tag  ############################
 
@@ -132,15 +132,15 @@ for i in range(len(Run_Number)):                                                
     print(" Check TrackerMap on " + str(Run_Number[i]) + '/' + Run_type + " folder")
     
     output =[]
-    output.append(os.popen("/bin/ls ").readline().strip())                                        ##Amandeep
+    output.append(os.popen("/bin/ls ").readline().strip())                                       
     print(output)
 
     ############# Producing the list of bad modules #################
 
     print(" Creating the list of bad modules ")
     
-    subprocess.call('listbadmodule ' + filepath + '/'+ File_Name + ' PCLBadComponents.log', shell=True) ## This we want to replace
-    subprocess.call('bs_bad_ls_harvester . '+ str(Run_Number[i]), shell=True)                     ## This we want to replace
+    subprocess.call('listbadmodule ' + filepath + '/'+ File_Name + ' PCLBadComponents.log', shell=True) 
+    subprocess.call('bs_bad_ls_harvester . '+ str(Run_Number[i]), shell=True)                     
     
     ############# Producing the Module difference for ExpressStream ###
 
@@ -162,7 +162,7 @@ for i in range(len(Run_Number)):                                                
 
     ############ Counting dead pixels ##############################
 
-    print("counting dead pixel ROCs" )                                         #What is with this number ?
+    print("counting dead pixel ROCs" )                                         
     if (Run_Number[i] < 290124) :                                 
         subprocess.call(CMSSW_BASE + scriptpath + 'DeadROCCounter.py ' + filepath + '/' + File_Name, shell=True)
     else: 
