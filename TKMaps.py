@@ -150,10 +150,10 @@ for i in range(len(Run_Number)):
 
     ############# Create merged list of BadComponent from (PCL, RunInfo and FED Errors) ignore for now 
 
-    subprocess.call('cmsRun' CMSSW_BASE + testpath +'mergeBadChannel_Template_cfg.py globalTag='+globalTag+' runNumber='+str(Run_Number[i])+' dqmFile='+filepath+'/'+File_Name, shell=True)
+    subprocess.call('cmsRun' + CMSSW_BASE + testpath +'mergeBadChannel_Template_cfg.py globalTag='+globalTag+' runNumber='+str(Run_Number[i])+' dqmFile='+filepath+'/'+File_Name, shell=True)
     shutil.move('MergedBadComponents.log','MergedBadComponents_run'+str(Run_Number[i])+'.txt')
     
-    subprocess.call("mkdir -p" tkrunspath + DataLocalDir + "/" + dest + " 2> /dev/null", shell=True)
+    subprocess.call("mkdir -p" + tkrunspath + DataLocalDir + "/" + dest + " 2> /dev/null", shell=True)
     shutil.copyfile(detIdInfoFileName, tkrunspath + DataLocalDir + '/' + dest + '/' + detIdInfoFileName)
 
     os.remove(detIdInfoFileName)
@@ -169,9 +169,9 @@ for i in range(len(Run_Number)):
         subprocess.call(CMSSW_BASE + scriptpath + 'DeadROCCounter_Phase1.py '+ filepath + '/' + File_Name, shell=True)
 
     if rereco:
-        subprocess.call('mkdir -p' evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_Number[i]) + '/ReReco 2> /dev/null', shell=True)
+        subprocess.call('mkdir -p' + evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_Number[i]) + '/ReReco 2> /dev/null', shell=True)
     else:
-        subprocess.call('mkdir -p' evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_Number[i]) + '/' + Run_type + ' 2> /dev/null', shell=True)
+        subprocess.call('mkdir -p' + evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_Number[i]) + '/' + Run_type + ' 2> /dev/null', shell=True)
     
     shutil.move('PixZeroOccROCs_run'+str(Run_Number[i])+'.txt',workPath+'/PixZeroOccROCs_run'+str(Run_Number[i])+'.txt')
 
