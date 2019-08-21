@@ -42,20 +42,20 @@ def downloadOfflineDQMhisto(run, Run_type,rereco):
     f=codecs.open("index.html", 'r')   #Why codecs though?
 
     index = f.readlines()
-    if any(str(Run_Number[i]) in s for s in index): #Why TF use Run_Number[i] ??
-        for s in index:                             #Okay this is stupid
+    if any(str(Run_Number[i]) in s for s in index): 
+        for s in index:                             
             if rereco:
-                if (str(Run_Number[i]) in s) and ("__DQMIO.root" in s) and ("17Sep2018" in s):   #Why this again? #RERECO Date and Year??
-                    File_Name = str(str(s).split("xx/")[1].split("'>DQM")[0])                    #Be careful with this one
+                if (str(Run_Number[i]) in s) and ("__DQMIO.root" in s) and ("17Sep2018" in s):   #RERECO Date and Year??
+                    File_Name = str(str(s).split("xx/")[1].split("'>DQM")[0])                   
             else:
-                if (str(Run_Number[i]) in s) and ("__DQMIO.root" in s):                         #Why this again?
-                    File_Name = str(str(s).split("xx/")[1].split("'>DQM")[0])                   #Be careful with this one
+                if (str(Run_Number[i]) in s) and ("__DQMIO.root" in s):                         
+                    File_Name = str(str(s).split("xx/")[1].split("'>DQM")[0])                   
 
     else:
         print('No DQM file available. Please check the Offline server')
         sys.exit(0)
 
-    print('Downloading DQM file:'+File_Name)                                                    #Reduce os.system calls remember?
+    print('Downloading DQM file:'+File_Name)                                                    
     os.system('curl -k --cert /data/users/cctrkdata/current/auth/proxy/proxy.cert --key /data/users/cctrkdata/current/auth/proxy/proxy.cert -X GET https://cmsweb.cern.ch/dqm/offline/data/browse/ROOT/OfflineData/'+DataOfflineDir+'/'+Run_type+'/000'+str(nnn)+'xx/'+File_Name+' > /tmp/'+File_Name)
     
     return File_Name
