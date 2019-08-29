@@ -110,7 +110,7 @@ for i in range(len(Run_Number)):
                                                     
     os.chdir(str(Run_Number[i])+'/'+Run_type)                                            
     
-    subprocess.call('cmsRun' + CMSSW_BASE + testpath + 'SiStripDQM_OfflineTkMap_Template_cfg_DB.py globalTag=' + globalTag + ' runNumber=' + str(Run_Number[i]) + ' dqmFile=' + filepath + '/' + File_Name + ' detIdInfoFile=' + detIdInfoFileName, shell=True)
+    subprocess.call('cmsRun ' + CMSSW_BASE + testpath + 'SiStripDQM_OfflineTkMap_Template_cfg_DB.py globalTag=' + globalTag + ' runNumber=' + str(Run_Number[i]) + ' dqmFile=' + filepath + '/' + File_Name + ' detIdInfoFile=' + detIdInfoFileName, shell=True)
     subprocess.call('rm -f *svg', shell=True)
 
     ############## Rename bad module list file ######################
@@ -120,11 +120,11 @@ for i in range(len(Run_Number)):
     ############# Copying the template html file to index.html #####
 
     if Run_type == "Cosmics" or Run_type == "StreamExpressCosmics":
-        subprocess.call('cat' + CMSSW_BASE + datapath + 'index_template_TKMap_cosmics.html | sed -e "s@RunNumber@' + str(Run_Number[i]) + '@g" > index.html', shell=True)
+        subprocess.call('cat ' + CMSSW_BASE + datapath + 'index_template_TKMap_cosmics.html | sed -e "s@RunNumber@' + str(Run_Number[i]) + '@g" > index.html', shell=True)
     elif Run_type == "StreamExpress":
-        subprocess.call('cat' + CMSSW_BASE + datapath + 'index_template_Express_TKMap.html | sed -e "s@RunNumber@' + str(Run_Number[i]) + '@g" > index.html', shell=True)
+        subprocess.call('cat ' + CMSSW_BASE + datapath + 'index_template_Express_TKMap.html | sed -e "s@RunNumber@' + str(Run_Number[i]) + '@g" > index.html', shell=True)
     else:
-        subprocess.call('cat' + CMSSW_BASE + datapath + 'index_template_TKMap.html | sed -e "s@RunNumber@' + str(Run_Number[i]) + '@g" > index.html', shell=True)
+        subprocess.call('cat ' + CMSSW_BASE + datapath + 'index_template_TKMap.html | sed -e "s@RunNumber@' + str(Run_Number[i]) + '@g" > index.html', shell=True)
 
     shutil.copyfile(CMSSW_BASE + datapath + 'fedmap.html','fedmap.html')
     shutil.copyfile(CMSSW_BASE + datapath + 'psumap.html','psumap.html')
@@ -150,10 +150,10 @@ for i in range(len(Run_Number)):
 
     ############# Create merged list of BadComponent from (PCL, RunInfo and FED Errors) ignore for now 
 
-    subprocess.call('cmsRun' + CMSSW_BASE + testpath +'mergeBadChannel_Template_cfg.py globalTag='+globalTag+' runNumber='+str(Run_Number[i])+' dqmFile='+filepath+'/'+File_Name, shell=True)
+    subprocess.call('cmsRun ' + CMSSW_BASE + testpath +'mergeBadChannel_Template_cfg.py globalTag='+globalTag+' runNumber='+str(Run_Number[i])+' dqmFile='+filepath+'/'+File_Name, shell=True)
     shutil.move('MergedBadComponents.log','MergedBadComponents_run'+str(Run_Number[i])+'.txt')
     
-    subprocess.call("mkdir -p" + tkrunspath + DataLocalDir + "/" + dest + " 2> /dev/null", shell=True)
+    subprocess.call("mkdir -p " + tkrunspath + DataLocalDir + "/" + dest + " 2> /dev/null", shell=True)
     shutil.copyfile(detIdInfoFileName, tkrunspath + DataLocalDir + '/' + dest + '/' + detIdInfoFileName)
 
     os.remove(detIdInfoFileName)
@@ -169,9 +169,9 @@ for i in range(len(Run_Number)):
         subprocess.call(CMSSW_BASE + scriptpath + 'DeadROCCounter_Phase1.py '+ filepath + '/' + File_Name, shell=True)
 
     if rereco:
-        subprocess.call('mkdir -p' + evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_Number[i]) + '/ReReco 2> /dev/null', shell=True)
+        subprocess.call('mkdir -p ' + evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_Number[i]) + '/ReReco 2> /dev/null', shell=True)
     else:
-        subprocess.call('mkdir -p' + evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_Number[i]) + '/' + Run_type + ' 2> /dev/null', shell=True)
+        subprocess.call('mkdir -p ' + evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_Number[i]) + '/' + Run_type + ' 2> /dev/null', shell=True)
     
     shutil.move('PixZeroOccROCs_run'+str(Run_Number[i])+'.txt',workPath+'/PixZeroOccROCs_run'+str(Run_Number[i])+'.txt')
 
