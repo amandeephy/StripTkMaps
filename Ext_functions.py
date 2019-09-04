@@ -45,18 +45,18 @@ def downloadOfflineDQMhisto(run, Run_type,rereco):
     print('Processing ' + Run_type + ' in '+ DataOfflineDir + '...')
     print('Directory to fetch the DQM file from :' + url)
 
-    subprocess.Popen('curl -k --cert' + certificate + '--key' + key + '-X GET' + url + '> index.html', shell=True)
+    subprocess.Popen('curl -k --cert ' + certificate + ' --key ' + key + ' -X GET ' + url + ' > index.html', shell=True)
 
     f     = codecs.open("index.html", 'r')
     index = f.readlines()
     
-    if any(str(Run_Number[i]) in s for s in index):
+    if any(str(run) in s for s in index):
         for s in index:
             if rereco:
-                if (str(Run_Number[i]) in s) and ('__DQMIO.root' in s) and ('17Sep2018' in s):   #Why this again? #RERECO Date and Year??
+                if (str(run) in s) and ('__DQMIO.root' in s) and ('17Sep2018' in s):   #Why this again? #RERECO Date and Year??
                     File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])                    #Be careful with this one
             else:
-                if (str(Run_Number[i]) in s) and ('__DQMIO.root' in s):                         #Why this again?
+                if (str(run) in s) and ('__DQMIO.root' in s):                         #Why this again?
                     File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])                   #Be careful with this one
 
     else:
@@ -80,22 +80,22 @@ def downloadOfflinePCLhisto(run, Run_type):
     print('Processing '+ Run_type + ' in ' + DataOfflineDir + '...')
     print('Directory to fetch the DQM file from :' + url)
     
-    subprocess.Popen('curl -k --cert' + certificate + '--key' + key '-X GET' + url + '> index.html', shell=True)
+    subprocess.Popen('curl -k --cert ' + certificate + ' --key ' + key ' -X GET ' + url + ' > index.html', shell=True)
     
     f     = codecs.open('index.html', 'r')
     index = f.readlines()
 
-    if any(str(Run_Number[i]) in s for s in index):
+    if any(str(run) in s for s in index):
         for s in index:
-            if (str(Run_Number[i]) in s) and ('PromptCalibProdSiPixel-Express' in s) and ('_ALCAPROMPT.root' in s):
+            if (str(run) in s) and ('PromptCalibProdSiPixel-Express' in s) and ('_ALCAPROMPT.root' in s):
                 File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])
     else:
         print('No DQM file available. Please check the Offline server')
         sys.exit(0)
 
     if File_Name!='Temp':
-        print('Downloading DQM file:'+File_Name)
-        subprocess.call('curl -k --cert' + certificate '--key' + key  + '-X GET' + url + File_Name + ' > /tmp/' + File_Name, shell=True)
+        print('Downloading DQM file:' + File_Name)
+        subprocess.call('curl -k --cert ' + certificate ' --key ' + key  + ' -X GET ' + url + File_Name + ' > /tmp/' + File_Name, shell=True)
 
     return File_Name
 
@@ -114,8 +114,8 @@ def downloadOnlineDQMhisto(run, Run_type):
     
     #########online file########
 
-    subprocess.Popen('curl -k --cert' + certificate + '--key' + key '-X GET' + url1 + '> index_online.html', shell=True)
-    subprocess.Popen('curl -k --cert' + certificate + '--key' + key '-X GET' + url2 + '> index_online_backup.html', shell=True)
+    subprocess.Popen('curl -k --cert ' + certificate + ' --key ' + key ' -X GET ' + url1 + ' > index_online.html', shell=True)
+    subprocess.Popen('curl -k --cert ' + certificate + ' --key ' + key ' -X GET ' + url2 + ' > index_online_backup.html', shell=True)
 
     f_online            = codecs.open("index_online.html", 'r')
     index_online        = f_online.readlines()
@@ -141,7 +141,7 @@ def downloadOnlineDQMhisto(run, Run_type):
     print('Downloading DQM file:'+File_Name_online)
 
 
-    subprocess.call('curl -k --cert' + certificate + '--key' + key + '-X GET' + url1 + File_Name_online +' > /tmp/' + File_Name_online, shell=True)
+    subprocess.call('curl -k --cert ' + certificate + ' --key ' + key + ' -X GET ' + url1 + File_Name_online +' > /tmp/' + File_Name_online, shell=True)
 
     os.remove('index_online.html')
     os.remove('index_online_backup.html')
@@ -149,7 +149,7 @@ def downloadOnlineDQMhisto(run, Run_type):
     return deadRocMap, File_Name_online
 
 
-def getGT(DQMfile, RunNumber, globalTagVar):
+def getGT(DQMfile, run, globalTagVar):
     globalTag_v0 = getGTfromDQMFile(DQMfile, RunNumber, globalTagVar)
     globalTag    = globalTag_v0
     print("Global Tag: " + globalTag_v0)
@@ -161,8 +161,8 @@ def getGT(DQMfile, RunNumber, globalTagVar):
 
     if globalTag == "":
         print(" No GlobalTag found: trying from DAS.... ")
-        globalTag = str(subprocess.Popen('getGTscript.sh ' + filepath + File_Name + ' ' + str(Run_Number[i]), shell=True));
+        globalTag = str(subprocess.Popen('getGTscript.sh ' + filepath + File_Name + ' ' + str(run), shell=True));
         if globalTag == "":
-            print(" No GlobalTag found for run: "+str(Run_Number[i]))
+            print(" No GlobalTag found for run: "+str(run))
 
     return globalTag
