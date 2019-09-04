@@ -6,8 +6,8 @@ from __future__ import print_function
 from getGTfromDQMFile_V2 import getGTfromDQMFile
 
 # These could be modified based on application
-key         = /data/users/cctrkdata/current/auth/proxy/proxy.cert
-certificate = /data/users/cctrkdata/current/auth/proxy/proxy.cert
+key         = '/data/users/cctrkdata/current/auth/proxy/proxy.cert'
+certificate = '/data/users/cctrkdata/current/auth/proxy/proxy.cert'
 
 def setRunDirectory(runNumber):
     runKey=0
