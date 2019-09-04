@@ -53,11 +53,11 @@ def downloadOfflineDQMhisto(run, Run_type,rereco):
     if any(str(run) in s for s in index):
         for s in index:
             if rereco:
-                if (str(run) in s) and ('__DQMIO.root' in s) and ('17Sep2018' in s):   #Why this again? #RERECO Date and Year??
-                    File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])                    #Be careful with this one
+                if (str(run) in s) and ('__DQMIO.root' in s) and ('17Sep2018' in s): 
+                    File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])                   
             else:
-                if (str(run) in s) and ('__DQMIO.root' in s):                         #Why this again?
-                    File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])                   #Be careful with this one
+                if (str(run) in s) and ('__DQMIO.root' in s):                         
+                    File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])                  
 
     else:
         print('No DQM file available. Please check the Offline server')
