@@ -5,7 +5,8 @@ import sys
 import ROOT
 import errno                                                         
 import codecs
-import shutil                                                 
+import shutil  
+import argparse
 import subprocess
 import Ext_functions
 from __future__ import print_function                                
@@ -27,7 +28,12 @@ evedispath = '/data/users/event_display/'
 tkrunspath = '/data/users/event_display/TkCommissioner_runs/'
 
 CMSSW_BASE = str(os.popen('echo ${CMSSW_BASE}').read().strip())
-                                                                           
+ 
+### --ML flag for dumping all data into log files ##  
+
+parser     = argparse.ArgumentParser(description = 'ML options for TkMaps')
+parser.add_argument('--ML', default = False, type = bool, help = 'To generate log files with all entries')
+args       = parser.parse_args()
 
 ########### Check if user enter the right run type #################
 
@@ -110,7 +116,11 @@ for i in range(len(Run_Number)):
                                                     
     os.chdir(str(Run_Number[i])+'/'+Run_type)                                            
     
-    subprocess.call('cmsRun ' + CMSSW_BASE + testpath + 'SiStripDQM_OfflineTkMap_Template_cfg_DB.py globalTag=' + globalTag + ' runNumber=' + str(Run_Number[i]) + ' dqmFile=' + filepath + '/' + File_Name + ' detIdInfoFile=' + detIdInfoFileName, shell=True)
+    if args.ML == True :
+        subprocess.call('cmsRun ' + CMSSW_BASE + testpath + 'SiStripDQM_OfflineTkMap_Template_cfg_ML.py globalTag=' + globalTag + ' runNumber=' + str(Run_Number[i]) + ' dqmFile=' + filepath + '/' + File_Name + ' detIdInfoFile=' + detIdInfoFileName, shell=True)
+    else :    
+        subprocess.call('cmsRun ' + CMSSW_BASE + testpath + 'SiStripDQM_OfflineTkMap_Template_cfg_DB.py globalTag=' + globalTag + ' runNumber=' + str(Run_Number[i]) + ' dqmFile=' + filepath + '/' + File_Name + ' detIdInfoFile=' + detIdInfoFileName, shell=True)
+    
     subprocess.call('rm -f *svg', shell=True)
 
     ############## Rename bad module list file ######################
