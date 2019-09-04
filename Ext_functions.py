@@ -45,7 +45,7 @@ def downloadOfflineDQMhisto(run, Run_type,rereco):
     print('Processing ' + Run_type + ' in '+ DataOfflineDir + '...')
     print('Directory to fetch the DQM file from :' + url)
 
-    subprocess.Popen('curl -k --cert' + certificate + '--key' + key '-X GET' + url + '> index.html', shell=True)
+    subprocess.Popen('curl -k --cert' + certificate + '--key' + key + '-X GET' + url + '> index.html', shell=True)
 
     f     = codecs.open("index.html", 'r')
     index = f.readlines()
@@ -63,7 +63,7 @@ def downloadOfflineDQMhisto(run, Run_type,rereco):
         print('No DQM file available. Please check the Offline server')
         sys.exit(0)
 
-    print('Downloading DQM file:'+File_Name)
+    print('Downloading DQM file:' + File_Name)
     subprocess.call('curl -k --cert' + certificate '--key' + key  + '-X GET' + url + File_Name + ' > /tmp/' + File_Name, shell=True)
     
     return File_Name
@@ -77,7 +77,7 @@ def downloadOfflinePCLhisto(run, Run_type):
     File_Name      = 'Temp'
     url            = 'https://cmsweb.cern.ch/dqm/offline/data/browse/ROOT/OfflineData/' + DataOfflineDir + '/' + Run_type + '/000' + str(nnn) + 'xx/'
 
-    print('Processing '+ Run_type + ' in '+DataOfflineDir+"...")
+    print('Processing '+ Run_type + ' in ' + DataOfflineDir + '...')
     print('Directory to fetch the DQM file from :' + url)
     
     subprocess.Popen('curl -k --cert' + certificate + '--key' + key '-X GET' + url + '> index.html', shell=True)
