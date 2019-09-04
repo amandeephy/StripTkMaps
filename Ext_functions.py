@@ -53,11 +53,11 @@ def downloadOfflineDQMhisto(run, Run_type,rereco):
     if any(str(Run_Number[i]) in s for s in index):
         for s in index:
             if rereco:
-                if (str(Run_Number[i]) in s) and ("__DQMIO.root" in s) and ("17Sep2018" in s):   #Why this again? #RERECO Date and Year??
-                    File_Name = str(str(s).split("xx/")[1].split("'>DQM")[0])                    #Be careful with this one
+                if (str(Run_Number[i]) in s) and ('__DQMIO.root' in s) and ('17Sep2018' in s):   #Why this again? #RERECO Date and Year??
+                    File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])                    #Be careful with this one
             else:
-                if (str(Run_Number[i]) in s) and ("__DQMIO.root" in s):                         #Why this again?
-                    File_Name = str(str(s).split("xx/")[1].split("'>DQM")[0])                   #Be careful with this one
+                if (str(Run_Number[i]) in s) and ('__DQMIO.root' in s):                         #Why this again?
+                    File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])                   #Be careful with this one
 
     else:
         print('No DQM file available. Please check the Offline server')
@@ -82,13 +82,13 @@ def downloadOfflinePCLhisto(run, Run_type):
     
     subprocess.Popen('curl -k --cert' + certificate + '--key' + key '-X GET' + url + '> index.html', shell=True)
     
-    f     = codecs.open("index.html", 'r')
+    f     = codecs.open('index.html', 'r')
     index = f.readlines()
 
     if any(str(Run_Number[i]) in s for s in index):
         for s in index:
-            if (str(Run_Number[i]) in s) and ("PromptCalibProdSiPixel-Express" in s) and ("__ALCAPROMPT.root" in s):
-                File_Name = str(str(s).split("xx/")[1].split("'>DQM")[0])
+            if (str(Run_Number[i]) in s) and ('PromptCalibProdSiPixel-Express' in s) and ('_ALCAPROMPT.root' in s):
+                File_Name = str(str(s).split('xx/')[1].split("'>DQM")[0])
     else:
         print('No DQM file available. Please check the Offline server')
         sys.exit(0)
@@ -124,15 +124,15 @@ def downloadOnlineDQMhisto(run, Run_type):
 
     if any(str(run) in x for x in index_online):
         for x in index_online:
-            if (str(run) in x) and ("_PixelPhase1_" in x):
-                File_Name_online=str(str(x).split(".root'>")[1].split("</a></td><td>")[0])
+            if (str(run) in x) and ('_PixelPhase1_' in x):
+                File_Name_online=str(str(x).split(".root'>")[1].split('</a></td><td>')[0])
                 deadRocMap = True
     else:
         print("Can't find any file in offline server, trying the online server")
         if any(str(run) in y for y in index_online_backup):
             for y in index_online:
-                if (str(run) in y) and ("_PixelPhase1_" in y):
-                    File_Name_online=str(str(y).split(".root'>")[1].split("</a></td><td>")[0])
+                if (str(run) in y) and ('_PixelPhase1_' in y):
+                    File_Name_online=str(str(y).split(".root'>")[1].split('</a></td><td>')[0])
                     deadRocMap = True
         else:
             print('No Online DQM file available. Skip dead roc map')
