@@ -5,6 +5,6 @@ To run in a CMSSW area (10_X_Y or higher) :
 ./TkMaps --Run_type <Cosmics | ZeroBias | StreamExpress | StreamExpressCosmics> --Run_number <List ofvalid integers>  --ML <Boolean default : False>
 ```
 The --ML flag requires the config file : 
-'''
+```
 StripDQM_OfflineTkMap_Template_cfg_ML.py
-'''
+```
