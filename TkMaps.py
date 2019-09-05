@@ -31,12 +31,12 @@ parser     = argparse.ArgumentParser(description = 'ML options for TkMaps')
 
 parser.add_argument('--ML', default = False, type = bool, help = 'To generate log files with all entries for ML applications')
 parser.add_argument('--Run_type'  , type = str, help = 'Run type :  Cosmics | ZeroBias | StreamExpress | StreamExpressCosmics')
-parser.add_argument('--Run_number', type = int, help = 'Run Number', nargs='+'  )
+parser.add_argument('--Run_Number', type = int, help = 'Run Number', nargs='+'  )
 
 args       = parser.parse_args()
 
 Run_type   = args.Run_type
-Run_Number = args.Run_number
+Run_Number = args.Run_Number
 
 ########### Check if user enter the right run type #################
 
