@@ -48,8 +48,7 @@ args       = parser.parse_args()
 Run_type   = args.Run_type
 ML         = args.ML
 Run_number = args.Run_number
-#Output_loc = args.Output_loc
-Output_loc = '/eos/user/a/abakshi/www/DQM/'
+Output_loc = args.Output_loc
 File_Name  = args.File_name
 
 nnnOut     = Run_number/1000
