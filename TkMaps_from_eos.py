@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from __future__ import print_function                                #Why is this even imported?
+from __future__ import print_function                               
 import os
 import re                                                            
 import sys
@@ -19,20 +19,26 @@ from change_name import change_name
 
 dest       = 'Beam'
 rereco     = False 
+deadRocMap = True
+
+### Locations of directories for various outputs
 
 workPath   = os.getcwd()
 
-testpath   = '/src/DQM/SiStripMonitorClient/test/'
-datapath   = '/src/DQM/SiStripMonitorClient/data/'
-scriptpath = '/src/DQM/SiStripMonitorClient/scripts/'
 evedispath = '/afs/cern.ch/user/a/abakshi/DQM_ML/'
 tkrunspath = '/afs/cern.ch/user/a/abakshi/DQM_ML/TkCommissioner_runs/'
-filepath   = '/afs/cern.ch/user/a/abakshi/DQM_ML/CMSSW_10_1_0/src/DQM/SiStripMonitorClient/scripts/'
+filepath   = '/afs/cern.ch/user/a/abakshi/DQM_ML/CMSSW_10_4_0/src/DQM/SiStripMonitorClient/scripts/'
 
-### To obatin this in your shell type echo $CMSSW_BASE
+### To obtain this information, in your shell type echo $CMSSW_BASE
 
-CMSSW_BASE = '/afs/cern.ch/user/a/abakshi/DQM_ML/CMSSW_10_6_2'
-                                                                           
+CMSSW_BASE = '/afs/cern.ch/user/a/abakshi/DQM_ML/CMSSW_10_4_0'
+
+### These are the locations of the directories within the CMSSW 
+
+testpath   = '/src/DQM/SiStripMonitorClient/test/'
+datapath   = '/src/DQM/SiStripMonitorClient/data/'
+scriptpath = '/src/DQM/SiStripMonitorClient/scripts/'           
+                                                                
 ### Here we define inputs to the script, Run type, Run number and the File name for eos files ######
 
 parser     = argparse.ArgumentParser(description = 'ML options for TkMaps')
@@ -40,22 +46,25 @@ parser     = argparse.ArgumentParser(description = 'ML options for TkMaps')
 parser.add_argument('--ML', default = True, type = bool, help = 'To generate log files with all entries for ML applications')
 parser.add_argument('--Run_type'  , type = str, help = 'Run type :  Cosmics | ZeroBias | StreamExpress | StreamExpressCosmics')
 parser.add_argument('--Run_number', type = int, help = 'Run Number' )
-parser.add_argument('--File_name' , type = str, help = 'Filename')
-parser.add_argument('--Output_loc', type = str, help = 'Output Location')
+parser.add_argument('--File_name' , type = str, help = 'Complete filename of the DQM file')
+parser.add_argument('--Output_loc', type = str, help = 'Location to output tracker maps')
 
 args       = parser.parse_args()
 
-Run_type   = args.Run_type
 ML         = args.ML
+Run_type   = args.Run_type
+#File_Name  = args.File_name
 Run_number = args.Run_number
 Output_loc = args.Output_loc
-File_Name  = args.File_name
 
 nnnOut     = Run_number/1000
-deadRocMap = True
 
 runDirval    = Ext_functions_from_eos.setRunDirectory(Run_number)
 DataLocalDir = runDirval[0]                                                          
+
+############### Download the DQM file from eos ##############
+
+File_Name = Ext_functions_from_eos.downloadfromeos(Run_number, str(Run_type))
 
 ################ Check if run is complete  ###################
 
@@ -81,13 +90,23 @@ else:
 ### If not create a new directory
 
 checkfolder = os.path.exists(str(Run_number))
+
 if checkfolder == True:
    shutil.rmtree(str(Run_number))                                                 
-   os.makedirs(str(Run_number)+'/'+Run_type)                          
+   os.makedirs(  str(Run_number) + '/' + Run_type)                          
 
 else:
-   os.makedirs(str(Run_number)+'/'+Run_type)                                      
-        
+   os.makedirs(str(Run_number) + '/' + Run_type)                                      
+
+######## Similarily for eos areas ###################
+ 
+if os.path.exists(Output_loc + '/' + str(nnnOut) + '/' + str(Run_number)) :
+   shutil.rmtree(Output_loc + '/' + str(nnnOut) + '/' + str(Run_number))
+   os.makedirs(Output_loc + '/' + str(nnnOut) + '/' + str(Run_number) + '/' + Run_type)
+
+else:
+   os.makedirs(Output_loc + '/' + str(nnnOut) + '/' + str(Run_number) + '/' + Run_type)
+       
 ############## Getting Global Tag  ############################
 
 # globalTag = Ext_functions_from_eos.getGT(filepath+File_Name, str(Run_number), 'globalTag_Step1')        
@@ -100,9 +119,6 @@ globalTag  = '92X_dataRun2_HLT_v5'
 print(" Creating the TrackerMap.... ")
 
 detIdInfoFileName = 'TkDetIdInfo_Run' + str(Run_number) + '_' + Run_type + '.root'
-
-### Change directory to the output location                                     
-os.chdir(str(Run_number) + '/' + Run_type)                                            
 
 ### This cmsRun command generates the TkMaps 
 ### The 2 config files are for the ML and not ML case
@@ -126,8 +142,9 @@ shutil.copyfile(CMSSW_BASE + '/src/DQM/SiStripMonitorClient/data/psumap.html','p
 print(" Check TrackerMap on " + str(Run_number) + '/' + Run_type + " folder")  
 
 ### Move TrackerMaps to output location 
-subprocess.call("cp -r " + str(Run_number) + '/' + Run_type  + " " + Output_loc)
-subprocess.call("rm -r " + str(Run_number) + '/' + Run_type)
+#subprocess.call("cp -r " + str(Run_number) + '/' + Run_type  + " " + Output_loc)
+#subprocess.call("rm -r " + str(Run_number) + '/' + Run_type)
+
 output = []
 output.append(os.popen("/bin/ls ").readline().strip())                                        
 
@@ -162,6 +179,8 @@ else:
         subprocess.call(CMSSW_BASE + scriptpath + 'DeadROCCounter_Phase1.py '+ filepath + '/' + File_Name, shell=True)
 
 subprocess.call('mkdir -p ' + evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_number) + '/' + Run_type + ' 2> /dev/null', shell=True)
+
+print('mkdir -p ' + evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_number) + '/' + Run_type + ' 2> /dev/null')
    
 shutil.move('PixZeroOccROCs_run' + str(Run_number) + '.txt', workPath + '/PixZeroOccROCs_run' + str(Run_number) + '.txt')
   
@@ -171,7 +190,7 @@ if deadRocMap == True:
     subprocess.call(CMSSW_BASE + scriptpath + 'DeadROC_duringRun.py '+ filepath + File_Name + ' ' + filepath + File_Name, shell=True)
     subprocess.call(CMSSW_BASE + scriptpath + 'change_name.py', shell=True)
     subprocess.call(CMSSW_BASE + scriptpath + 'PixelMapPlotter.py MaskedROC_sum.txt -c', shell=True)
-    os.remove('MaskedROC_sum.txt')
+    #os.remove('MaskedROC_sum.txt')
     subprocess.call(CMSSW_BASE + scriptpath + 'InefficientDoubleROC.py ' + filepath + File_Name, shell=True)
  
 else:
@@ -190,13 +209,12 @@ for file_name in strip_files:
     full_stripfile_name = os.path.join('.', file_name)
     if (os.path.isfile(full_stripfile_name)):
        shutil.copy(full_stripfile_name, evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_number) + '/' + Run_type)
-
+       shutil.copy(full_stripfile_name, Output_loc  + '/' + str(nnnOut) + '/' + str(Run_number) + '/' + Run_type)
 
 ############# Start making pixel maps ##########################
-
 os.chdir(workPath)
-os.remove('index.html')
-shutil.rmtree(str(Run_number))
+#os.remove('index.html')
+#shutil.rmtree(str(Run_number))
 
 ############# Produce pixel phase1 TH2Poly maps ###############
 
@@ -213,6 +231,8 @@ for file_name in pixel_files:
            shutil.copy(full_pixelfile_name, evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_number) + '/ReReco')
         else:
            shutil.copy(full_pixelfile_name, evedispath + DataLocalDir + '/' + dest + '/' + str(nnnOut) + '/' + str(Run_number) + '/' + Run_type)
+           shutil.copy(full_stripfile_name, Output_loc + '/' + str(nnnOut) + '/' + str(Run_number) + '/' + Run_type)
+
 shutil.rmtree('OUT')
    
 ############# Produce pixel phase1 tree for Offline TkCommissioner ####
@@ -221,9 +241,10 @@ pixelTreeFileName = 'PixelPhase1Tree_Run'+str(Run_number)+'_'+Run_type+'.root'
     
 subprocess.call( CMSSW_BASE + scriptpath + 'PhaseITreeProducer.py ' + filepath + '/' + File_Name + ' ' + pixelTreeFileName, shell=True)
 shutil.copyfile(pixelTreeFileName, tkrunspath + DataLocalDir + '/' + dest + '/' + pixelTreeFileName)
+print(tkrunspath + DataLocalDir + '/' + dest + '/' + pixelTreeFileName)
     
 os.remove(pixelTreeFileName)
-os.remove(filepath + File_Name)
+#os.remove(filepath + File_Name)
 os.chdir(workPath)
 
 
