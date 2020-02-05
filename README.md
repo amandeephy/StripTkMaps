@@ -2,9 +2,11 @@
 A first repository to collect the restructuring of (strips) TkMaps related scripts for Tracker Offline shifters </br>
 
 These scripts were created to download and generate tracker maps from the /eos/ area at CERN. 
-I work with CMSSW_10_4_0, to run in a CMSSW area (10_X_Y or higher):
+I work with CMSSW_10_4_0, ensure you have the DQM folder in your src area . <br/>
+To run in a CMSSW area (10_X_Y or higher):
 
 ```bash
+cd /CMSSW_10_4_0/src/DQM/SiStripMonitorClient/src
 cmsenv
 
 ./TkMaps_from_eos 
