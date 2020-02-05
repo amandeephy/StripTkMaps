@@ -1,10 +1,19 @@
 # StripTkMaps
 A first repository to collect the restructuring of (strips) TkMaps related scripts for Tracker Offline shifters </br>
-To run in a CMSSW area (10_X_Y or higher) :
+
+These scripts were created to download and generate tracker maps from the /eos/ area at CERN. 
+I work with CMSSW_10_4_0, to run in a CMSSW area (10_X_Y or higher) :
 ```bash
-./TkMaps --Run_type <Cosmics | ZeroBias | StreamExpress | StreamExpressCosmics> --Run_number <List of valid integers>  --ML <Boolean (default : False)>
+./TkMaps_from_eos 
+--Run_type <Cosmics | ZeroBias | StreamExpress | StreamExpressCosmics> 
+--Run_number <List of valid integers> 
+--File_name  <This option allows for directly using an xrootd file >
+--Output_loc <Location of eos output>
+--ML <Boolean (default : False)>
 ```
+Filename is not required and can be reconstructed in the downloadfromeos function in the Ext_functions_from_eos script.
 The --ML flag requires the config file : 
 ```
 StripDQM_OfflineTkMap_Template_cfg_ML.py
 ```
+Alongside the tracker maps this should create a dump 
