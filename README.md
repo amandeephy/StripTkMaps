@@ -2,8 +2,11 @@
 A first repository to collect the restructuring of (strips) TkMaps related scripts for Tracker Offline shifters </br>
 
 These scripts were created to download and generate tracker maps from the /eos/ area at CERN. 
-I work with CMSSW_10_4_0, to run in a CMSSW area (10_X_Y or higher) :
+I work with CMSSW_10_4_0, to run in a CMSSW area (10_X_Y or higher):
+
 ```bash
+cmsenv
+
 ./TkMaps_from_eos 
 --Run_type <Cosmics | ZeroBias | StreamExpress | StreamExpressCosmics> 
 --Run_number <List of valid integers> 
