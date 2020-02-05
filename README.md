@@ -11,9 +11,10 @@ I work with CMSSW_10_4_0, to run in a CMSSW area (10_X_Y or higher) :
 --Output_loc <Location of eos output>
 --ML <Boolean (default : False)>
 ```
-Filename is not required and can be reconstructed in the downloadfromeos function in the Ext_functions_from_eos script.
+Filename is not required and can be reconstructed in the downloadfromeos function in the Ext_functions_from_eos script. <br/>
 The --ML flag requires the config file : 
 ```
 StripDQM_OfflineTkMap_Template_cfg_ML.py
 ```
-Alongside the tracker maps this should create a dump 
+Alongside the tracker maps this should create a list of attributes of all modules.
+This requires an updated SiStripTrackerMapCreator.cc file.
