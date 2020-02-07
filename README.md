@@ -13,7 +13,9 @@ git cms-init
 git cms-addpkg DQM/SiStripMonitorClient
 cd DQM/SiStripMonitorClient/scripts
 ```
-Copy the 2 scripts: TkMaps_from_eos and Ext_functions_from_eos  to your CMSSW area 
+Copy the 2 scripts: TkMaps_from_eos and Ext_functions_from_eos to your CMSSW area </br>
+Change the default output locations by modifying the tkrunspath and evedispath </br>
+Change the location of where the DQM file is temporarily copied by editing filepath </br>
 ```bash
 python TkMaps_from_eos 
 --Run_type <Cosmics | ZeroBias | StreamExpress | StreamExpressCosmics> 
