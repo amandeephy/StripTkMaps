@@ -6,10 +6,16 @@ I work with CMSSW_10_4_0, ensure you have the DQM folder in your src area . <br/
 To run in a CMSSW area (10_X_Y or higher):
 
 ```bash
-cd /CMSSW_10_4_0/src/DQM/SiStripMonitorClient/src
+cmsrel CMSSW_10_4_0
+cd CMSSW_10_4_0/src
 cmsenv
-
-./TkMaps_from_eos 
+git cms-init
+git cms-addpkg DQM/SiStripMonitorClient
+cd DQM/SiStripMonitorClient/scripts
+```
+Copy the 2 scripts: TkMaps_from_eos and Ext_functions_from_eos  to your CMSSW area 
+```bash
+python TkMaps_from_eos 
 --Run_type <Cosmics | ZeroBias | StreamExpress | StreamExpressCosmics> 
 --Run_number <List of valid integers> 
 --File_name  <This option allows for directly using an xrootd file >
