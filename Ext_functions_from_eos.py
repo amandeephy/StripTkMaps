@@ -3,7 +3,7 @@ import os
 import sys
 import codecs
 import subprocess
-from   getGTfromDQMFile_V2 import getGTfromDQMFile
+from   ROOT                import TFile, gDirectory
 
 # These could be modified based on application
 key         = '/afs/cern.ch/user/a/abakshi/DQM_ML/userkey.pem'
@@ -214,11 +214,45 @@ def downloadOnlineDQMhisto(run, Run_type):
     return deadRocMap, File_Name_online
 
 
+def getGTfromDQMFile(DQMfile, Run_number, globalTagVar) :
 
-def getGT(DQMfile, run, globalTagVar):
+    if not os.path.isfile(DQMfile):
+       print("Error: file" + str(DQMfile) + "not found, exit")
+       sys.exit(0)
+
+    thefile = TFile( DQMfile )
+    globalTagDir = 'DQMData/Run ' + Run_number + '/Info/Run summary/CMSSWInfo'
+
+    if not gDirectory.GetDirectory( globalTagDir ):
+       print("Warning: globalTag not found in DQM file")
+       sys.exit(0)
+
+    keys = gDirectory.GetDirectory(globalTagDir).GetListOfKeys()
+
+    key = keys[0]
+
+    globalTag = ''
+
+    while key:
+       obj = key.ReadObj()
+       if globalTagVar in obj.GetName():
+          globalTag = obj.GetName()[len("<"+globalTagVar+">s="):-len("</"+globalTagVar+">")]
+          break
+       key = keys.After(key)
+
+    if len(globalTag) > 1:
+        if globalTag.find('::') >= 0:
+           print(globalTag[0:globalTag.find('::')])
+        else:
+           print(globalTag)
+
+    return globalTag
+ 
+def getGT(DQMfile, Run_number, globalTagVar):
    
-    globalTag_v0 = getGTfromDQMFile(DQMfile, run, globalTagVar)
+    globalTag_v0 = getGTfromDQMFile(DQMfile, Run_number, globalTagVar)
     globalTag    = globalTag_v0
+
     print("Global Tag: " + globalTag_v0)
 
     #### Clean up the Global Tag ###################
@@ -227,7 +261,6 @@ def getGT(DQMfile, run, globalTagVar):
         if (globalTag_v0[z].isdigit()) and  (globalTag_v0[z+1].isdigit()) and (globalTag_v0[z+2].isdigit()) and(globalTag_v0[z+3].isupper()):
             globalTag = globalTag_v0[z:]
             break
-  
    
     if globalTag == "":
 
@@ -239,4 +272,4 @@ def getGT(DQMfile, run, globalTagVar):
    	if globalTag == "":
             print(" No GlobalTag found for run: "+str(run))
 
-    return globalTag
+    return globalTag 
