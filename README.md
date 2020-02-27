@@ -30,4 +30,4 @@ The --ML flag requires the config file :
 StripDQM_OfflineTkMap_Template_cfg_ML.py
 ```
 Alongside the tracker maps this should create a list of attributes of all modules.
-This requires an updated SiStripTrackerMapCreator.cc file.
+The updated	SiStripTrackerMapCreator.cc allows for numTopModules to be unsigned integer, hence passing a -1 will create a dump of all strip variables in topmodules.log.
