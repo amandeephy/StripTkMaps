@@ -13,7 +13,7 @@ git cms-init
 git cms-addpkg DQM/SiStripMonitorClient
 cd DQM/SiStripMonitorClient/scripts
 ```
-Copy the 2 scripts: TkMaps_from_eos and Ext_functions_from_eos to your CMSSW area </br>
+Copy the 2 scripts: TkMaps_from_eos and Ext_functions_from_eos to your to your `scripts/` directory.</br>
 Change the default output locations by modifying the tkrunspath and evedispath </br>
 Change the location of where the DQM file is temporarily copied by editing filepath </br>
 ```bash
