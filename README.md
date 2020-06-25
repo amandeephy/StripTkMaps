@@ -1,4 +1,4 @@
-# ML4TRKDQM
+# Generation of lists of Run numbers from EOS, AFS or RR.
 
 ## Prerequisites
 
@@ -9,27 +9,25 @@ Test your python version by running
 
 ```bash
 python --version
-```
-
-```
 Python 3.6.8
 ```
-## Setup
+## Setup (code is not adapted for use at LPC cluster yet)
 
 At your terminal (choose different port for your case)
 
-#### At lpc
+The ports are optional to specify, you may want to do this when trying to use a Jupyter notebook
+#### At lpc 
 ```bash
 kinit username@FNAL.GOV
 
-ssh -L 127.0.0.1:9999:127.0.0.1:9999 username@cmslpc-sl6.fnal.gov
+ssh -L 127.0.0.1:9999:127.0.0.1:9999 username@cmslpc-sl6.fnal.gov 
 cd path/to/your/working/area
 ```
 #### Or at lxplus
 
 ```bash
 
-ssh -L 127.0.0.1:9999:127.0.0.1:9999 username@lxplus.cern.ch
+ssh -L 127.0.0.1:9999:127.0.0.1:9999 username@lxplus.cern.ch 
 cd path/to/your/working/area
 ```
 
@@ -39,11 +37,11 @@ cmsrel CMSSW_10_2_10
 cd CMSSW_10_2_10/src/
 cmsenv
 
-git clone git@github.com:GuillermoFidalgo/ML4TRKDQM.git
+git clone git@github.com:GuillermoFidalgo/StripTkMaps.git
 #or 
-git clone https://github.com/GuillermoFidalgo/ML4TRKDQM.git
+git clone https://github.com/GuillermoFidalgo/StripTkMaps.git
 
-cd ML4TRKDQM
+cd StripTkMaps
 
 jupyter notebook --port 9999 --ip 127.0.0.1 --no-browser
 ```
@@ -53,12 +51,14 @@ jupyter notebook --port 9999 --ip 127.0.0.1 --no-browser
 
 
 
-### In order to use the notebook you must have the appropiate certificate in the same directory as the script (Unless you specify the path to it)
+### The use of the notebook is deprecated and was present only for initial development so you should ignore the notebook for now.
+To use the notebook you must have the appropiate certificate in the same directory as the script (Unless you specify the path to it)
 [Open the notebook](ListOfRuns.ipynb) to interact with the code and make the apporpiate changes to your needs.
 
-Notice that there is an `index.html` document. You should ignore this for now as we will create this file repeatedly and rewrite it in the script. This will not be needed in the script but will used for now in the python notebook.
+Notice that there is an `index.html` document. You should ignore this because it is a remnant from earlier versions of the code and it is not necesary at all for now.
 
-**After playing with the notebook you can see other functionality in the [script](ListRuns.py)**
+
+**You can see other functionality in the [`ListRuns_cfg.py`](ListRuns_cfg.py) script**
 
 
 *Side Note* To use the script please look at [Authentication Setup](https://github.com/GuillermoFidalgo/ML4TRKDQM#authentication-setup)
@@ -66,7 +66,8 @@ Notice that there is an `index.html` document. You should ignore this for now as
 
 *Side Note* **If you clone from this repo please remove `venv/` and all of its contents *before* creating a virtual enviroment**
 
-I highly recommend setting up a virtual environment to not get conflicts between different versions of packages.
+Unless you know what you are doing, it is recommended to set up a virtual environment such as to not get conflicts between different versions of packages.
+
 
 You can create a virtual python virtual environment with:
 
@@ -145,3 +146,24 @@ These commands should ask you for the user certificate password.
 In the simplest case, just enter them twice.
 
 *Note*: Your private key ```userkey.pem``` and public key ```usercert.pem``` have to be **passwordless** for the tools to work.
+
+
+
+
+
+# Usage
+
+The `ListRuns_cfg.py` is a module which contains different functions and helper scripts in order to extract information from different sources to later produce 
+a list of runs found from that source.
+
+
+The most relevant methods to look at when wanting to change the final list are: 
+- `getruntype_eos()` 
+- `getRR()`
+- `getruns_afs()`
+
+The `ListRunsDriver.py` is an interactive (for now) script that will generate text files with the run numbers found on the specified source.
+Note that it is a bit hard coded for ZeroBias runs. This is something to be fixed in the future.
+
+*Side note* The latest version of the `getRR()` method is awaiting athentication fixes and will not always output correctly due to a wierd encoding error which is 
+currently being looked at.
