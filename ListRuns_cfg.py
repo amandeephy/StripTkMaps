@@ -3,36 +3,42 @@
 import __future__
 import codecs, os, re, subprocess,shlex,numpy
 import cernrequests,runregistry
+import requests
 from bs4 import BeautifulSoup
 
-def getlist(file="ZeroBias_runs.txt"):
+def getlist(file="ZeroBias_runs.txt",Zerobias=True):
     f=open(file).read()
-    runs= re.findall("000(\d{6})",str(f)) #get all 6 digit numbers followed by 000
-    intruns=[int(num) for num in runs] # make the list full of intergers
-    intruns.sort()  #have an ascending sorted list of runs 
-    if len(intruns)==0: # Check if list is empty
+    if Zerobias==True:
+        runs= re.findall("000(\d{6})",str(f)) #get all 6 digit numbers followed by 000
+        runs=[int(num) for num in runs] # make the list full of intergers
+    else:
+        runs= re.findall("(\d{6})",str(f)) #get all 6 digit numbers
+        runs=[int(num) for num in runs] # make the list full of intergers
+    runs.sort()  #have an ascending sorted list of runs 
+    
+    if len(runs)==0: # Check if list is empty
         print("no runs found")
     else:
         print("Found some runs")
-    intruns=list(dict.fromkeys(intruns))  #make a list into a dict and the back into a list. This eliminates any duplicate runs
+    runs=list(dict.fromkeys(runs))  #make a list into a dict and the back into a list. This eliminates any duplicate runs
 
     i=0
     checkiter=[]
-    for x in intruns:    # Check if all runs are sorted from oldest to newest
-        if x==intruns[-1]:
+    for x in runs:    # Check if all runs are sorted from oldest to newest
+        if x==runs[-1]:
             break
-        elif x > intruns[i+1]:
+        elif x > runs[i+1]:
             print("iteration",i,"is greater the the next iteration")
             checkiter.append(i)
         i=i+1
-    repeat=getrepeatedruns(intruns)
+    repeat=getrepeatedruns(runs)
 
 
     if len(checkiter)!=0:
-       print("Check the entries number "+checkiter+" of this list")
-       return intruns,checkiter
+        print("Check the entries number "+checkiter+" of this list")
+        return runs,checkiter
     else:
-        return intruns,checkiter
+        return runs,checkiter
 
 
 
@@ -42,10 +48,7 @@ def getruntype_eos(runtype="ZeroBias"):
 
 
 
-def getRR(first=272000,last=326000,
-		tkr_IN=True,tkr_strip_status='GOOD',
-		#tkr_pix_status='GOOD',
-		name= 'UL',cl='Collisions'):
+def getRR(first=272000,last=326000,tkr_IN=True,tkr_strip_status='GOOD',tkr_pix_status='GOOD', name= 'UL',cl='Collisions'):
     runs = runregistry.get_datasets(filter={
         'run_number': { 'and': [{'>': first}, {'<': last}]},
         'tracker_included': tkr_IN,
@@ -91,7 +94,7 @@ def compare_with_Gjsn(global_runs_with_rootfiles):
     
     json_runslist=[]
     for url in json_runs:
-        response=cernrequests.get(baseurl+url) # open the document
+        response=requests.get(baseurl+url) # open the document
         index = response.text                  # read the document
         a=str(index)                           # convert to string
         soup = BeautifulSoup(a, 'html.parser') # create the soup object
@@ -102,22 +105,36 @@ def compare_with_Gjsn(global_runs_with_rootfiles):
         print('\n',"amount of runs in the json",len(a),"in",url)
         print('\n',"From",a[0],"to",a[-1])
         json_runslist.append(a)
-    json_list = [item for sublist in json_runslist for item in sublist]
-
+    json_list = [int(item) for sublist in json_runslist for item in sublist]
+    json_list.sort()
     good=[]
     missing=[]
     bad=[]
+    
+    ############### Experimental
     for jrun in json_list:
-        for grun in global_runs_with_rootfiles:
-            if jrun==grun:
-                good.append(jrun)            
-        if jrun not in global_runs_with_rootfiles:
+        if jrun in list_runs:
+            good.append(jrun)            
+        else:
             missing.append(jrun)
 
-    for grun in global_runs_with_rootfiles:
-        if grun not in json_list:
+    for run in list_runs:
+        if run not in json_list:
             bad.append(grun)
-    # print "all good runs found",good,"\n"
+
+
+                
+    print('---'*20)
+    print( '\n',len(good),"Good runs")
+    print( '\n',len(missing),"Missing runs")
+    print( '\n',len(bad),"bad runs")
+
+    return json_list,good,missing,bad
+    
+    
+    ###############
+    
+    
     print( '\n',len(good),"good runs")
     print( '\n',len(missing),"missing runs")
     print( '\n',len(bad),"bad runs")
@@ -171,7 +188,7 @@ def getruns_afs(year="all",rdirs='False'):
             else:
 
                 for n in re.findall(r"R(\d+)",str(entries)):    # This will only keep the 6 digits of the run numbers that we need (without the "R000")
-                    x=str(int(n))                               # Since we wont want to do math with these numbers I will convert them to strings
+                    x=int(n)                                    # We want to make the run numbers intergers
                     runs_with_rootfiles.append(x)               # Fill the list
                     global_runs_with_rootfiles.append(x)        # Fill the list
 
